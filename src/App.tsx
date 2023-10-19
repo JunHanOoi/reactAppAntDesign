@@ -1,46 +1,74 @@
 import { useState } from 'react';
 import { Tabs, ConfigProvider } from 'antd';
+import { BrowserRouter as Router, Route, Routes, Link, useNavigate, To } from 'react-router-dom';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
 import Setting from './pages/Setting';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
-function App() {
+function Nav() {
+
+  const navigate = useNavigate();
 
   const [items] = useState([
     {
-      key: '1',
+      key: 'home',
       label: 'Home',
-      children: <Home />
     },
     {
-      key: '2',
+      key: 'profile',
       label: 'Profile',
-      children: <Profile />
     },
     {
-      key: '3',
+      key: 'setting',
       label: 'Setting',
-      children: <Setting />
     },
   ]);
 
+  const onChange = (path: To) => {
+    navigate(path);
+  };
+
+  const queryClient = new QueryClient();
+
   return (
     <>
-      <ConfigProvider
-        theme={{
-          components: {
-            Tabs: {
-              titleFontSize: 30
-            }
-          },
-        }}
-      >
-        <Tabs
-          tabPosition={'left'}
-          tabBarStyle={{ fontSize: '30px' }}
-          items={items}
-        />
-      </ConfigProvider>
+      <div style={{ display: 'flex' }}>
+        <QueryClientProvider client={queryClient}>
+          <ConfigProvider
+            theme={{
+              components: {
+                Tabs: {
+                  titleFontSize: 30
+                }
+              },
+            }}
+          >
+            <Tabs
+              tabPosition={'left'}
+              tabBarStyle={{ fontSize: '30px' }}
+              items={items}
+              onTabClick={onChange}
+            />
+          </ConfigProvider>
+          <Routes>
+            <Route path='/home' Component={Home} />
+            <Route path='/profile' Component={Profile} />
+            <Route path='/setting' Component={Setting} />
+          </Routes>
+        </QueryClientProvider>
+      </div>
+    </>
+  )
+}
+
+function App() {
+
+  return (
+    <>
+      <Router>
+        <Nav />
+      </Router>
     </>
   )
 }

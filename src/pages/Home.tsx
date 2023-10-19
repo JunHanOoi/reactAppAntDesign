@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react'
 import { Tree, Typography, Table, Space, Button, Modal } from 'antd';
-import { tableData } from './tableData';
-import classes from './Home.module.css'
+import { useQuery } from 'react-query';
+import './Home.scss'
 // type HomeProps = {
 //     name: string; 
 //     onSOmething(   ): void
@@ -17,6 +17,22 @@ function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [customerId, setCustomerId] = useState();
 
+  async function fetchUsers() {
+    const res = await fetch('/tableData.json');
+    return res.json();
+  }
+
+  const { data: tableData, status } = useQuery('customer', fetchUsers);
+  
+
+  if (status === 'loading') {
+    return <div>Loading...</div>;
+  }
+
+  if (status === 'error') {
+    return <div>Error fetching data</div>;
+  }
+
   const showModal = (id: React.SetStateAction<undefined>) => {
     setCustomerId(id);
     setIsModalOpen(true);
@@ -29,7 +45,7 @@ function Home() {
   };
 
   const modalData = useMemo(() => {
-    let modalDetails = tableData.filter((row => 
+    const modalDetails = tableData.filter(((row: { id: undefined; }) => 
       row.id === customerId
     ))
     return modalDetails;
@@ -37,11 +53,11 @@ function Home() {
 
 
   const selectedRowData = useMemo(() => {
-    let selectedData = tableData.filter((row =>
+    let selectedData = tableData.filter(((row: { country: string; state: string; city: string; }) =>
       row.country === selectedTreeNode || row.state === selectedTreeNode || row.city === selectedTreeNode
     ))
     if (selectedData.length === 0) {
-      selectedData = tableData.filter((row) =>
+      selectedData = tableData.filter((row: { state: string; city: string; }) =>
         row.state === selectedTreeNode || row.city === selectedTreeNode
       );
     }
@@ -194,21 +210,21 @@ function Home() {
       <Title>
         Home
       </Title>
-      <Space className={classes.container}>
-        <Space className={classes.containerTreeMenu}>
+      <Space className='container'>
+        <Space className='containerTreeMenu'>
           <Tree
             treeData={data}
-            className={classes.treeMenu}
+            className='treeMenu'
             defaultExpandAll
             onSelect={onSelectTreeNode}
           />
         </Space>
-        <Space className={classes.containerTable}>
-          <Table columns={columns} dataSource={selectedRowData.length >= 1 ? selectedRowData : tableData} className={classes.table} />
+        <Space className='containerTable'>
+          <Table columns={columns} dataSource={selectedRowData.length >= 1 ? selectedRowData : tableData} className='table' />
         </Space>
         <Modal title="Customer Details" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
           {modalData.length > 0 && (
-            <Space className={classes.containerModal}>
+            <Space className='containerModal'>
               <Paragraph>Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {modalData[0].name}</Paragraph>
               <Paragraph>Address&nbsp;&nbsp;: {modalData[0].address}</Paragraph>
               <Paragraph>Country&nbsp;&nbsp;: {modalData[0].country}</Paragraph>

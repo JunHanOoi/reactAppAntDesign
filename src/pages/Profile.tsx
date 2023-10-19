@@ -1,87 +1,90 @@
-import { Button, Checkbox, Form, Input, Typography } from 'antd';
-
-const { Title } = Typography;
-
-const onFinish = (values: any) => {
-    alert("Username is " + values.username + " Password is " + values.password)
-    console.log('Success:', values);
-};
-const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo);
-};
+import { Button, Form, Input, Typography } from 'antd';
+import { useForm, Controller } from 'react-hook-form'
 
 
-const App = () => (
-    <>
-        <Title>
-            Login
-        </Title>
-        <Form
-            name="basic"
-            labelCol={{
-                span: 8,
-            }}
-            wrapperCol={{
-                span: 16,
-            }}
-            style={{
-                maxWidth: 600,
-            }}
-            initialValues={{
-                remember: true,
-            }}
-            onFinish={onFinish}
-            onFinishFailed={onFinishFailed}
-            autoComplete="off"
-        >
-            <Form.Item
-                label="Username"
-                name="username"
-                rules={[
-                    {
-                        required: true,
-                        message: 'Please input your username!',
-                    },
-                ]}
-            >
-                <Input />
-            </Form.Item>
+export default function Profile() {
+    const { Title, Paragraph } = Typography;
 
-            <Form.Item
-                label="Password"
-                name="password"
-                rules={[
-                    {
-                        required: true,
-                        message: 'Please input your password!',
-                    },
-                ]}
-            >
-                <Input.Password />
-            </Form.Item>
+    const { control, handleSubmit } = useForm()
 
-            <Form.Item
-                name="remember"
-                valuePropName="checked"
+    const onSubmit = handleSubmit(data => {
+        alert("Username is " + data.username + " Password is " + data.password)
+    })
+    const onFinishFailed = (errorInfo: any) => {
+        console.log('Failed:', errorInfo);
+    };
+    return (
+        <div>
+            <Title>
+                Login
+            </Title>
+            <Form
+                name="basic"
+                labelCol={{
+                    span: 8,
+                }}
                 wrapperCol={{
-                    offset: 8,
                     span: 16,
                 }}
-            >
-                <Checkbox>Remember me</Checkbox>
-            </Form.Item>
-
-            <Form.Item
-                wrapperCol={{
-                    offset: 8,
-                    span: 16,
+                style={{
+                    maxWidth: 600,
                 }}
+                initialValues={{
+                    remember: true,
+                }}
+                onFinish={onSubmit}
+                onFinishFailed={onFinishFailed}
+                autoComplete="off"
             >
-                <Button type="primary" htmlType="submit">
-                    Submit
-                </Button>
-            </Form.Item>
-        </Form>
-    </>
-);
-export default App;
+                <Controller
+                    name="username"
+                    control={control}
+                    defaultValue=""
+                    rules={{ required: true }}
+                    render={({ field, fieldState }) => (
+                        <Form.Item
+                            label="Username"
+                            id="outlined-basic"
+                            {...field}
+                        >
+                            <Input
+                                status={!!fieldState.error ? 'error' : ''}
+                            />
+                            {!!fieldState.error && <Paragraph>Please input your username!</Paragraph>}
+                        </Form.Item>
+                    )}
+                />
+
+                <Controller
+                    name="password"
+                    control={control}
+                    defaultValue=""
+                    rules={{ required: true }}
+                    render={({ field, fieldState }) => (
+                        <Form.Item
+                            label="Password"
+                            {...field}
+                        >
+                            <Input.Password
+                                status={!!fieldState.error ? 'error' : ''}
+                            />
+                            {!!fieldState.error && <Paragraph>Please input your password!</Paragraph>}
+                        </Form.Item>
+
+                    )}
+                />
+
+                <Form.Item
+                    wrapperCol={{
+                        offset: 8,
+                        span: 16,
+                    }}
+                >
+                    <Button type="primary" htmlType="submit">
+                        Submit
+                    </Button>
+                </Form.Item>
+            </Form>
+        </div>
+    )
+}
