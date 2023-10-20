@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react'
 import { Tree, Typography, Table, Space, Button, Modal, Row, Col, } from 'antd';
-import { useQuery } from 'react-query';
 import './Home.scss'
+import { useQueryData, fetchCountry, fetchCustomers } from '../hooks/useQueryData';
 // import { tableData } from './tableData';
 // type HomeProps = {
 //     name: string; 
@@ -17,37 +17,8 @@ function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [customerId, setCustomerId] = useState();
 
-  const useDelayedQuery = (queryKey: string, queryFn: { (): Promise<any>; (): any; }, delay: number | undefined) => {
-    const fetchWithDelay = async () => {
-      await new Promise((resolve) => setTimeout(resolve, delay));
-      return queryFn();
-    };
-  
-    return useQuery(queryKey, fetchWithDelay);
-  };
-  
-  const fetchCustomers = async () => {
-    const res = await fetch('tableData.json', {
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      }
-    });
-    return res.json();
-  };
-  
-  const fetchCountry = async () => {
-    const res = await fetch('countryData.json', {
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      }
-    });
-    return res.json();
-  };
-  
-  const { data: tableData, status } = useDelayedQuery('customer', fetchCustomers, 2000);
-  const { data: countryData } = useDelayedQuery('country', fetchCountry, 2000);
+  const { data: tableData, status: status } = useQueryData('customer', fetchCustomers, 2000);
+  const { data: countryData } = useQueryData('country', fetchCountry, 2000);
 
   const modalData = useMemo(() => {
     if (tableData) {
