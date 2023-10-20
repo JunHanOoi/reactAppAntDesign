@@ -46,7 +46,7 @@ export default function Profile() {
                             <Input
                                 status={!!fieldState.error ? 'error' : ''}
                             />
-                            {!!fieldState.error && <Paragraph>Please input your username!</Paragraph>}
+                            {!!fieldState.error && <Paragraph style={{color: 'red'}}>Username is required.</Paragraph>}
                         </Form.Item>
                     )}
                 />
@@ -64,7 +64,7 @@ export default function Profile() {
                             <Input.Password
                                 status={!!fieldState.error ? 'error' : ''}
                             />
-                            {!!fieldState.error && <Paragraph>Please input your password!</Paragraph>}
+                            {!!fieldState.error && <Paragraph style={{color: 'red'}}>Password is required.</Paragraph>}
                         </Form.Item>
 
                     )}

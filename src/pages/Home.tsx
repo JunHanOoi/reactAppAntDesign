@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react'
 import { Tree, Typography, Table, Space, Button, Modal, Row, Col, } from 'antd';
 import './Home.scss'
-import { useQueryData, fetchCountry, fetchCustomers } from '../hooks/useQueryData';
+import { useQueryData } from '../hooks/useQueryData';
 // import { tableData } from './tableData';
 // type HomeProps = {
 //     name: string; 
@@ -17,8 +17,10 @@ function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [customerId, setCustomerId] = useState();
 
-  const { data: tableData, status: status } = useQueryData('customer', fetchCustomers, 2000);
-  const { data: countryData } = useQueryData('country', fetchCountry, 2000);
+  const { data: tableData, status: status } = useQueryData('customer', 'tableData.json', 2000);
+  const { data: countryData } = useQueryData('country', 'countryData.json', 2000);
+
+  console.log(countryData)
 
   const modalData = useMemo(() => {
     if (tableData) {
@@ -114,11 +116,11 @@ function Home() {
     },
   ];
 
-  if (status === 'loading' ) {
+  if (status === 'loading') {
     return <div>Loading...</div>;
   }
 
-  if (status === 'error' ) {
+  if (status === 'error') {
     return <div>Error fetching data</div>;
   }
 

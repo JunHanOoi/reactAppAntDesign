@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Tabs, ConfigProvider } from 'antd';
-import { BrowserRouter as Router, Route, Routes, Link, useNavigate, To } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useNavigate, To } from 'react-router-dom';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
 import Setting from './pages/Setting';
