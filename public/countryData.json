@@ -1,0 +1,86 @@
+[
+    {
+        "key": "1",
+        "title": "USA",
+        "children": [
+            {
+                "key": "3",
+                "title": "California",
+                "children": [
+                    {
+                        "key": "7",
+                        "title": "Los Angeles"
+                    },
+                    {
+                        "key": "8",
+                        "title": "San Francisco"
+                    },
+                    {
+                        "key": "9",
+                        "title": "San Diego"
+                    }
+                ]
+            },
+            {
+                "key": "4",
+                "title": "New York",
+                "children": [
+                    {
+                        "key": "10",
+                        "title": "New York City"
+                    },
+                    {
+                        "key": "11",
+                        "title": "Buffalo"
+                    },
+                    {
+                        "key": "12",
+                        "title": "Rochester"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "key": "2",
+        "title": "Canada",
+        "children": [
+            {
+                "key": "5",
+                "title": "Ontario",
+                "children": [
+                    {
+                        "key": "13",
+                        "title": "Toronto"
+                    },
+                    {
+                        "key": "14",
+                        "title": "Ottawa"
+                    },
+                    {
+                        "key": "15",
+                        "title": "Hamilton"
+                    }
+                ]
+            },
+            {
+                "key": "6",
+                "title": "Quebec",
+                "children": [
+                    {
+                        "key": "16",
+                        "title": "Montreal"
+                    },
+                    {
+                        "key": "17",
+                        "title": "Quebec City"
+                    },
+                    {
+                        "key": "18",
+                        "title": "Laval"
+                    }
+                ]
+            }
+        ]
+    }
+]

@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react'
-import { Tree, Typography, Table, Space, Button, Modal } from 'antd';
+import { Tree, Typography, Table, Space, Button, Modal, Row, Col, } from 'antd';
 import { useQuery } from 'react-query';
 import './Home.scss'
 // import { tableData } from './tableData';
@@ -9,17 +9,24 @@ import './Home.scss'
 // }
 // props: HomeProps
 
-const { Title, Paragraph } = Typography;
-
+const { Title } = Typography;
 
 function Home() {
 
   const [selectedTreeNode, setSelectedTreeNode] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [customerId, setCustomerId] = useState();
-  const { data: tableData, status } = useQuery('customer', fetchUsers);
 
-  async function fetchUsers() {
+  const useDelayedQuery = (queryKey: string, queryFn: { (): Promise<any>; (): any; }, delay: number | undefined) => {
+    const fetchWithDelay = async () => {
+      await new Promise((resolve) => setTimeout(resolve, delay));
+      return queryFn();
+    };
+  
+    return useQuery(queryKey, fetchWithDelay);
+  };
+  
+  const fetchCustomers = async () => {
     const res = await fetch('tableData.json', {
       headers: {
         'Content-Type': 'application/json',
@@ -27,7 +34,20 @@ function Home() {
       }
     });
     return res.json();
-  }
+  };
+  
+  const fetchCountry = async () => {
+    const res = await fetch('countryData.json', {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
+    });
+    return res.json();
+  };
+  
+  const { data: tableData, status } = useDelayedQuery('customer', fetchCustomers, 2000);
+  const { data: countryData } = useDelayedQuery('country', fetchCountry, 2000);
 
   const modalData = useMemo(() => {
     if (tableData) {
@@ -63,7 +83,7 @@ function Home() {
   const handleOk = () => {
     setIsModalOpen(false);
   };
-  
+
   const handleCancel = () => {
     setIsModalOpen(false);
   };
@@ -123,98 +143,11 @@ function Home() {
     },
   ];
 
-  const data = [
-    {
-      key: "1",
-      title: "USA",
-      children: [
-        {
-          key: "3",
-          title: "California",
-          children: [
-            {
-              key: "7",
-              title: "Los Angeles",
-            },
-            {
-              key: "8",
-              title: "San Francisco",
-            },
-            {
-              key: "9",
-              title: "San Diego",
-            },
-          ],
-        },
-        {
-          key: "4",
-          title: "New York",
-          children: [
-            {
-              key: "10",
-              title: "New York City",
-            },
-            {
-              key: "11",
-              title: "Buffalo",
-            },
-            {
-              key: "12",
-              title: "Rochester",
-            },
-          ],
-        },
-      ],
-    },
-    {
-      key: "2",
-      title: "Canada",
-      children: [
-        {
-          key: "5",
-          title: "Ontario",
-          children: [
-            {
-              key: "13",
-              title: "Toronto",
-            },
-            {
-              key: "14",
-              title: "Ottawa",
-            },
-            {
-              key: "15",
-              title: "Hamilton",
-            },
-          ],
-        },
-        {
-          key: "6",
-          title: "Quebec",
-          children: [
-            {
-              key: "16",
-              title: "Montreal",
-            },
-            {
-              key: "17",
-              title: "Quebec City",
-            },
-            {
-              key: "18",
-              title: "Laval",
-            },
-          ],
-        },
-      ],
-    },
-  ];
-
-  if (status === 'loading') {
+  if (status === 'loading' ) {
     return <div>Loading...</div>;
   }
 
-  if (status === 'error') {
+  if (status === 'error' ) {
     return <div>Error fetching data</div>;
   }
 
@@ -226,7 +159,7 @@ function Home() {
       <Space className='container'>
         <Space className='containerTreeMenu'>
           <Tree
-            treeData={data}
+            treeData={countryData}
             className='treeMenu'
             defaultExpandAll
             onSelect={onSelectTreeNode}
@@ -238,12 +171,30 @@ function Home() {
         <Modal title="Customer Details" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
           {modalData.length > 0 && (
             <Space className='containerModal'>
-              <Paragraph>Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {modalData[0].name}</Paragraph>
-              <Paragraph>Address&nbsp;&nbsp;: {modalData[0].address}</Paragraph>
-              <Paragraph>Country&nbsp;&nbsp;: {modalData[0].country}</Paragraph>
-              <Paragraph>State&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {modalData[0].state}</Paragraph>
-              <Paragraph>City&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {modalData[0].city}</Paragraph>
-              <Paragraph>Pin Code&nbsp;: {modalData[0].pinCode}</Paragraph>
+              <Row>
+                <Col span={4}>Name</Col>
+                <Col span={20}>: {modalData[0].name}</Col>
+              </Row>
+              <Row>
+                <Col span={4}>Address</Col>
+                <Col span={20}>: {modalData[0].address}</Col>
+              </Row>
+              <Row>
+                <Col span={4}>Country</Col>
+                <Col span={20}>: {modalData[0].country}</Col>
+              </Row>
+              <Row>
+                <Col span={4}>State</Col>
+                <Col span={20}>: {modalData[0].state}</Col>
+              </Row>
+              <Row>
+                <Col span={4}>City</Col>
+                <Col span={20}>: {modalData[0].city}</Col>
+              </Row>
+              <Row>
+                <Col span={4}>Pin Code</Col>
+                <Col span={20}>: {modalData[0].pinCode}</Col>
+              </Row>
             </Space>
           )}
         </Modal>
