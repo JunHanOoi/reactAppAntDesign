@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react'
 import { Tree, Typography, Table, Space, Button, Modal } from 'antd';
 import { useQuery } from 'react-query';
 import './Home.scss'
+// import { tableData } from './tableData';
 // type HomeProps = {
 //     name: string; 
 //     onSOmething(   ): void
@@ -16,53 +17,60 @@ function Home() {
   const [selectedTreeNode, setSelectedTreeNode] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [customerId, setCustomerId] = useState();
+  const { data: tableData, status } = useQuery('customer', fetchUsers);
 
   async function fetchUsers() {
-    const res = await fetch('/tableData.json');
+    const res = await fetch('tableData.json', {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
+    });
     return res.json();
   }
 
-  const { data: tableData, status } = useQuery('customer', fetchUsers);
-  
+  const modalData = useMemo(() => {
+    if (tableData) {
+      const modalDetails = tableData.filter(((row: { id: undefined; }) =>
+        row.id === customerId
+      ))
+      return modalDetails;
+    }
+    return [];
+  }, [customerId])
 
-  if (status === 'loading') {
-    return <div>Loading...</div>;
-  }
 
-  if (status === 'error') {
-    return <div>Error fetching data</div>;
-  }
+  const selectedRowData = useMemo(() => {
+    if (tableData) {
+      let selectedData = tableData.filter((row: { country: string; state: string; city: string; }) =>
+        row.country === selectedTreeNode || row.state === selectedTreeNode || row.city === selectedTreeNode
+      );
+      if (selectedData.length === 0) {
+        selectedData = tableData.filter((row: { state: string; city: string; }) =>
+          row.state === selectedTreeNode || row.city === selectedTreeNode
+        );
+      }
+      return selectedData;
+    }
+    return [];
+  }, [selectedTreeNode]);
 
   const showModal = (id: React.SetStateAction<undefined>) => {
     setCustomerId(id);
     setIsModalOpen(true);
   };
+
   const handleOk = () => {
     setIsModalOpen(false);
   };
+  
   const handleCancel = () => {
     setIsModalOpen(false);
   };
 
-  const modalData = useMemo(() => {
-    const modalDetails = tableData.filter(((row: { id: undefined; }) => 
-      row.id === customerId
-    ))
-    return modalDetails;
-  }, [customerId])
-
-
-  const selectedRowData = useMemo(() => {
-    let selectedData = tableData.filter(((row: { country: string; state: string; city: string; }) =>
-      row.country === selectedTreeNode || row.state === selectedTreeNode || row.city === selectedTreeNode
-    ))
-    if (selectedData.length === 0) {
-      selectedData = tableData.filter((row: { state: string; city: string; }) =>
-        row.state === selectedTreeNode || row.city === selectedTreeNode
-      );
-    }
-    return selectedData;
-  }, [selectedTreeNode])
+  const onSelectTreeNode = (selectedKeys: any, info: { node: { title: React.SetStateAction<string>; }; }) => {
+    setSelectedTreeNode(info.node.title);
+  };
 
   const columns = [
     {
@@ -107,13 +115,14 @@ function Home() {
       key: 'action',
       render: (record: { id: any; }) => (
         <Space size="middle">
-          <Button type="primary" onClick={() => {showModal(record.id)}}>
+          <Button type="primary" onClick={() => { showModal(record.id) }}>
             View
           </Button>
         </Space>
       ),
     },
   ];
+
   const data = [
     {
       key: "1",
@@ -201,9 +210,13 @@ function Home() {
     },
   ];
 
-  const onSelectTreeNode = (selectedKeys: any, info: { node: { title: React.SetStateAction<string>; }; }) => {
-    setSelectedTreeNode(info.node.title);
-  };
+  if (status === 'loading') {
+    return <div>Loading...</div>;
+  }
+
+  if (status === 'error') {
+    return <div>Error fetching data</div>;
+  }
 
   return (
     <div>

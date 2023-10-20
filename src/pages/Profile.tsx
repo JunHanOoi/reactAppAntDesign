@@ -10,9 +10,6 @@ export default function Profile() {
     const onSubmit = handleSubmit(data => {
         alert("Username is " + data.username + " Password is " + data.password)
     })
-    const onFinishFailed = (errorInfo: any) => {
-        console.log('Failed:', errorInfo);
-    };
     return (
         <div>
             <Title>
@@ -32,9 +29,8 @@ export default function Profile() {
                 initialValues={{
                     remember: true,
                 }}
-                onFinish={onSubmit}
-                onFinishFailed={onFinishFailed}
                 autoComplete="off"
+                onSubmitCapture={onSubmit}
             >
                 <Controller
                     name="username"
