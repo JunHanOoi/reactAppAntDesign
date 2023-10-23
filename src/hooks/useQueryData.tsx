@@ -1,17 +1,33 @@
 import { useQuery } from 'react-query';
 
-export function useQueryData(queryKey: any, queryData: string, delay: number | undefined) {
-    const fetchData = async () => {
-        const response = await fetch(queryData, {
+export function useQueryCustomers() {
+    return useQuery({queryKey: ["customers"], 
+        queryFn:  async () => {
+        const response = await fetch("tableData.json", {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
             },
         });
         const data = await response.json();
-        await new Promise((resolve) => setTimeout(resolve, delay));
+        await new Promise((resolve) => setTimeout(resolve, 2000));
         return data;
-    };
+    }
+});
+}
 
-    return useQuery({queryKey: queryKey, queryFn: fetchData});
+export function useQueryCountry() {
+    return useQuery({queryKey: ["country"], 
+        queryFn:  async () => {
+        const response = await fetch("countryData.json", {
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+        });
+        const data = await response.json();
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        return data;
+    }
+});
 }

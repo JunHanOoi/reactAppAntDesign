@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react'
 import { Tree, Typography, Table, Space, Button, Modal, Row, Col, } from 'antd';
 import './Home.scss'
-import { useQueryData } from '../hooks/useQueryData';
+import { useQueryCustomers, useQueryCountry } from '../hooks/useQueryData';
 // import { tableData } from './tableData';
 // type HomeProps = {
 //     name: string; 
@@ -17,8 +17,8 @@ function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [customerId, setCustomerId] = useState();
 
-  const { data: tableData, status: status } = useQueryData('customer', 'tableData.json', 2000);
-  const { data: countryData } = useQueryData('country', 'countryData.json', 2000);
+  const { data: tableData, status: status } = useQueryCustomers();
+  const { data: countryData } = useQueryCountry();
 
   console.log(countryData)
 
